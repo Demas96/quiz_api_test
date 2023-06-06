@@ -1,18 +1,19 @@
 import datetime
-
 import sqlalchemy
-from fastapi import FastAPI
 import databases
 import requests
 import json
+
+from fastapi import FastAPI
 from pydantic import BaseModel
 from sqlalchemy import desc
 
 from models.models import Questions
 
+
 app = FastAPI()
 
-DATABASE_URL = "postgresql://postgres:postgres@pgdb:5432/quizdb"
+DATABASE_URL = "postgresql://postgres:postgres@pgdb:5432/postgres"
 database = databases.Database(DATABASE_URL)
 engine = sqlalchemy.create_engine(
     DATABASE_URL, connect_args={"check_same_thread": False}
@@ -49,8 +50,12 @@ async def get_question(questions: QuestValid):
         date = item['airdate'][:10]
         date = datetime.datetime.strptime(date, '%Y-%m-%d')
         try:
-            query = Questions.insert().values(question_id=item['id'], question=item['question'], answer=item['answer'],
-                                              date=date)
+            query = Questions.insert().values(
+                question_id=item['id'],
+                question=item['question'],
+                answer=item['answer'],
+                date=date
+            )
             await database.execute(query)
         except:
             url_rez = f"https://jservice.io/api/random?count=1"

@@ -11,24 +11,28 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - pgdb
+      pgdb:
+        condition: service_healthy
+    volumes:
+      - .:/fastapi_app
 
   pgdb:
     image: postgres:15.3
     restart: always
     environment:
-      - POSTGRES_DB=quizdb
+      - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-    container_name: pgdb
+    container_name: pgdb_quiz
     volumes:
-      - pgdbdata:/var/lib/postgresql/data/
+      - ./database:/var/lib/postgresql/data/
     ports:
       - "5432:5432"
-
-networks:
-    postgres:
-      driver: bridge
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 3s
+      timeout: 3s
+      retries: 5
 
 volumes:
   pgdbdata: null
