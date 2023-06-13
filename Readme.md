@@ -1,6 +1,6 @@
 # Quiz Question Collector
 
-Данный API собирет вопросы для викторины с сервиса https://jservice.io
+Данный API собирает вопросы для викторины с сервиса https://jservice.io
 
 ## Основной стек
 
